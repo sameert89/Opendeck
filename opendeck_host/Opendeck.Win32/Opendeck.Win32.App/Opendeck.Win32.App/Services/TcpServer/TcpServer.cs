@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Google.Protobuf;
+using Opendeck.Win32.Proto;
+using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -115,4 +118,31 @@ internal sealed class TcpServer : ITcpServer
     {
         Logger += callback;
     }
+
+    public async Task SendMessageAsync(string clientRemoteEndpoint, NetworkMessage message)
+    {
+        try
+        {
+            using TcpClient tcpClient = new();
+            var ipPort = clientRemoteEndpoint.Split([':']);
+            if (ipPort.Length < 2)
+                throw new ArgumentOutOfRangeException("Client remote endpoint is not in proper format");
+            await tcpClient.ConnectAsync(IPAddress.Parse(ipPort[0]), int.Parse(ipPort[1]));
+            var data = message.ToByteArray();
+            // Prefix bytes, this will tell the receiver the size of the message (receiver must know already that prefix is 4 byte)
+            // 4 bytes can store lengths up to 4.3GB
+            var lengthBytes = new byte[4];
+            BinaryPrimitives.WriteUInt32BigEndian(lengthBytes, (uint)data.Length);
+
+            using var stream = tcpClient.GetStream();
+            await stream.WriteAsync(lengthBytes);
+            await stream.WriteAsync(data);
+            Logger.Invoke($"Message sent: {data.Length} bytes");
+        }
+        catch (Exception ex)
+        {
+            Logger.Invoke($"Error in SendMessageAsync: {ex}"); //swallow
+        }
+    }
+
 }

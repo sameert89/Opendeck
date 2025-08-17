@@ -1,4 +1,4 @@
-﻿using Opendeck.Win32.App.Models;
+﻿using Opendeck.Win32.Proto;
 using System.Threading.Tasks;
 
 namespace Opendeck.Win32.App.Services.MessageRouter;
@@ -10,5 +10,5 @@ internal interface IMessageRouter
     /// </summary>
     /// <param name="message"></param>
     /// <returns></returns>
-    Task RouteMessageAsync(Message message);
+    Task RouteMessageAsync(NetworkMessage message);
 }

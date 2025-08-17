@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Opendeck.Win32.Proto;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,4 +16,6 @@ public interface ITcpServer
     bool GetServerStatus();
 
     void AddLogger(Action<string> callback);
+
+    Task SendMessageAsync(string clientRemoteEndpoint, NetworkMessage message);
 }
