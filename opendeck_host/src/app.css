@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@layer utilities {
+  .btn-hover {
+    @apply transition duration-200 ease-in-out;
+    background-color: var(--btn-bg);
+  }
+
+  .btn-hover:hover {
+    background-color: var(--btn-bg-hover);
+  }
+}

@@ -9,11 +9,12 @@
 </script>
 
 <div
-  class="flex flex-row w-full h-full"
+  class="flex w-full h-screen"
   style="background-color: {currentTheme.primary};"
 >
   <NavBar />
-  {@render children()}
+
+  <div class="flex-1 overflow-y-auto">
+    {@render children()}
+  </div>
 </div>
-
-
